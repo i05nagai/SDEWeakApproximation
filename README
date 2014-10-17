@@ -1,0 +1,45 @@
+SDE_WA - SDE Weak Approximation Library
+ 
+Copyright 2011 Mariko Ninomiya and Syoiti Ninomiya
+License: LGPL v2.1, see ./lgpl-2.1.txt
+
+Contact <mariko.nnmy@gmail.com> <syoiti.ninomiya@gmail.com>
+
+1. Introduction
+
+You are currently reading the README file for SDE Weak Approximation Library 
+(SDE_WA).
+This project is hosted under https://sites.google.com/site/marikoninomiya/
+Please refer to these pages for updated information and the latest version 
+of SDE_WA.
+
+SDE_WA is an open-source library of algorithms 
+for higher-order weak approximation of SDEs implemented in 
+the programming language C. The library is published under terms of the the 
+GNU Lesser General Public License v2.1. This has implications 
+on what you can do with sources and
+binaries of the SDE Weak Approximation library. 
+For details, please refer to the file LICENSE, which should have been
+provided with this distribution.
+
+PLEASE NOTE: This is a library of useful data structures and numerical algorithms. 
+
+
+2. How to install
+
+Modify Makefile to fit your enviroment and do ``make all.'' Then libsde_wa.a 
+will be generated.  
+
+3. Using SDE_WA
+
+Simply link ``libsde_wa.a'' by using linker of your operating system
+(ex. ld in unix/linux).  
+
+4. Manual and tutorials
+
+To get started using SDE_WA, you may be interested in the following websites 
+which contain manual and tutorials:
+
+* https://sites.google.com/site/marikoninomiya/
+
+
