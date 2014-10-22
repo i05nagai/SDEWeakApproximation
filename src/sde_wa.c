@@ -109,15 +109,15 @@ void free_SDE_WA_SLTN(SDE_WA_SLTN *sltn){
   for (j=0; j<sltn->sde->dim_y;j++) free(sltn->drift_corrector_matrix[j]);
   free(sltn->drift_corrector_matrix);
   switch (sltn->alg){
-  case 0:
+  case E_M:
     free(sltn->sample_pt.em);
     break;
-  case 1:
+  case N_V:
     free(sltn->rk_step_interv);
     free(sltn->sample_pt.nv->rv_nv_n);
     free(sltn->sample_pt.nv);
     break;
-  case 2:
+  case N_N:
     free(sltn->rk_step_interv);
     free(sltn->sample_pt.nn);
     free(sltn->nn_sample_pt_interv);
@@ -158,17 +158,17 @@ int next_SDE_WA(SDE_WA_SLTN *X, double s, double y[], double dy[], void *rv){
   RV_NV *nv_sp_ptr;
 
   switch (X->alg){
-  case 0:
+  case E_M:
     sp_ptr=(double *)rv;
     for (j=0; j<X->sde->dim_BM; j++) X->sample_pt.em[j]=sp_ptr[j];
     break;
-  case 1:
+  case N_V:
     nv_sp_ptr=(RV_NV *)rv;
     X->sample_pt.nv->rv_nv_b=nv_sp_ptr->rv_nv_b;
     for (j=0; j<X->sde->dim_BM;j++)
       X->sample_pt.nv->rv_nv_n[j]=nv_sp_ptr->rv_nv_n[j];
     break;
-  case 2:
+  case N_N:
     sp_ptr=(double *)rv;
     for (j=0; j<2*X->sde->dim_BM; j++) X->sample_pt.nn[j]=sp_ptr[j];
     break;
