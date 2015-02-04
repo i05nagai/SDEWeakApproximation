@@ -48,6 +48,7 @@ SDE_WA_OBJS += sde_wa_butcher.o
 SDE_WA_OBJS += sde_wa_em.o
 SDE_WA_OBJS += sde_wa_nn.o
 SDE_WA_OBJS += sde_wa_nv.o
+SDE_WA_OBJS += sde_wa_c3.o
 
 SDE_WA_SRC =  $(addprefix $(SRCDIR)/, $(SDE_WA_OBJS:.o=.c))
 

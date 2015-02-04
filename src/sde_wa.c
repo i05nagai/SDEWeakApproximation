@@ -27,6 +27,7 @@
 #include "sde_wa_em.h"
 #include "sde_wa_nv.h"
 #include "sde_wa_nn.h"
+#include "sde_wa_c3.h"
 
 SDE_WA_SYSTEM *alloc_SDE_WA_SYSTEM(int N, int d, void *par){
   SDE_WA_SYSTEM *sde;
@@ -75,11 +76,11 @@ SDE_WA_SLTN *alloc_SDE_WA_SLTN(enum ALG alg, int mth_is, SDE_WA_SYSTEM *sde){
   for (j=0; j<sde->dim_y; j++)
     sltn->drift_corrector_matrix[j]=(double *)malloc(sizeof(double)*sde->dim_y);
   switch (alg){
-  case 0:
+  case E_M:
     sltn->one_step=sde_wa_em;
     sltn->sample_pt.em=(double *)malloc(sizeof(double)*sde->dim_BM);
     break;
-  case 1:
+  case N_V:
     sltn->one_step=sde_wa_nv;
     if (sltn->mth_is==5)
       sltn->rk_step_interv=(double *)malloc(sizeof(double)*(sde->dim_y)*11);
@@ -88,7 +89,7 @@ SDE_WA_SLTN *alloc_SDE_WA_SLTN(enum ALG alg, int mth_is, SDE_WA_SYSTEM *sde){
     sltn->sample_pt.nv=(RV_NV *)malloc(sizeof(RV_NV));
     sltn->sample_pt.nv->rv_nv_n=(double *)malloc(sizeof(double)*(sde->dim_BM));
     break;
-  case 2:
+  case N_N:
     sltn->one_step=sde_wa_nn;
     if (sltn->mth_is==5)
       sltn->rk_step_interv=(double *)malloc(sizeof(double)*(sde->dim_y)*11);
@@ -97,6 +98,11 @@ SDE_WA_SLTN *alloc_SDE_WA_SLTN(enum ALG alg, int mth_is, SDE_WA_SYSTEM *sde){
     sltn->sample_pt.nn=(double *)malloc(sizeof(double)*(2*sde->dim_BM));
     sltn->nn_sample_pt_interv=(double *)malloc(sizeof(double)*(2*sde->dim_BM));
     break;
+	case C_3:
+		sltn->one_step=sde_wa_c3;
+		sltn->rk_step_interv=(double *)malloc(sizeof(double)*(sde->dim_y)*11);
+		sltn->sample_pt.c3=(double *)malloc(sizeof(double)*(sde->dim_BM));
+		break;
   }
   return sltn;
 }
@@ -109,19 +115,22 @@ void free_SDE_WA_SLTN(SDE_WA_SLTN *sltn){
   for (j=0; j<sltn->sde->dim_y;j++) free(sltn->drift_corrector_matrix[j]);
   free(sltn->drift_corrector_matrix);
   switch (sltn->alg){
-  case 0:
+  case E_M:
     free(sltn->sample_pt.em);
     break;
-  case 1:
+  case N_V:
     free(sltn->rk_step_interv);
     free(sltn->sample_pt.nv->rv_nv_n);
     free(sltn->sample_pt.nv);
     break;
-  case 2:
+  case N_N:
     free(sltn->rk_step_interv);
     free(sltn->sample_pt.nn);
     free(sltn->nn_sample_pt_interv);
     break;
+  case C_3:
+	free(sltn->rk_step_interv);
+	free(sltn->sample_pt.c3);
   }
   free(sltn);
 }
@@ -158,20 +167,25 @@ int next_SDE_WA(SDE_WA_SLTN *X, double s, double y[], double dy[], void *rv){
   RV_NV *nv_sp_ptr;
 
   switch (X->alg){
-  case 0:
+  case E_M:
     sp_ptr=(double *)rv;
     for (j=0; j<X->sde->dim_BM; j++) X->sample_pt.em[j]=sp_ptr[j];
     break;
-  case 1:
+  case N_V:
     nv_sp_ptr=(RV_NV *)rv;
     X->sample_pt.nv->rv_nv_b=nv_sp_ptr->rv_nv_b;
     for (j=0; j<X->sde->dim_BM;j++)
       X->sample_pt.nv->rv_nv_n[j]=nv_sp_ptr->rv_nv_n[j];
     break;
-  case 2:
+  case N_N:
     sp_ptr=(double *)rv;
     for (j=0; j<2*X->sde->dim_BM; j++) X->sample_pt.nn[j]=sp_ptr[j];
     break;
+  case C_3:
+	sp_ptr=(double *)rv;
+	for (j=0; j<X->sde->dim_BM; j++) {
+		X->sample_pt.c3[j]=sp_ptr[j];
+	}
   }
   for (j=0; j<X->sde->dim_y; j++){
     X->initv[j]=y[j];

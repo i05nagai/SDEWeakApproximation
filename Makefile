@@ -48,6 +48,7 @@ SDE_WA_OBJS += sde_wa_butcher.o
 SDE_WA_OBJS += sde_wa_em.o
 SDE_WA_OBJS += sde_wa_nn.o
 SDE_WA_OBJS += sde_wa_nv.o
+SDE_WA_OBJS += sde_wa_c3.o
 
 SDE_WA_SRC =  $(addprefix $(SRCDIR)/, $(SDE_WA_OBJS:.o=.c))
 
@@ -55,8 +56,6 @@ SDE_WA = sde_wa
 TARGET_SDE_WA = lib$(SDE_WA).a
 TARGETS = $(TARGET_SDE_WA) 
 
-.PHONY: all
-all: $(TARGETS)
 
 $(TARGET_SDE_WA): $(SDE_WA_OBJS)
 	rm -f $@
@@ -72,6 +71,8 @@ Makefile : $(SELF)
 	>> $@
 	chmod -w $@
 
+.PHONY: all
+all: clean $(TARGETS)
 
 .PHONY: clean
 clean :
@@ -83,12 +84,15 @@ clean :
 # Automatically-generated dependencies list:
 sde_wa.o: src/sde_wa.c include/sde_wa.h include/sde_wa_errno.h \
   include/sde_wa_em.h include/sde_wa.h include/sde_wa_nv.h \
-  include/sde_wa_nn.h
+  include/sde_wa_nn.h include/sde_wa_c3.h
 sde_wa_butcher.o: src/sde_wa_butcher.c include/sde_wa_butcher.h \
-  include/sde_wa.h include/sde_wa_errno.h include/sde_wa_nn.h
+  include/sde_wa.h include/sde_wa_errno.h include/sde_wa_nn.h \
+  include/sde_wa_c3.h
 sde_wa_em.o: src/sde_wa_em.c include/sde_wa.h include/sde_wa_errno.h \
   include/sde_wa_em.h include/sde_wa.h
 sde_wa_nn.o: src/sde_wa_nn.c include/sde_wa.h include/sde_wa_errno.h \
   include/sde_wa_nn.h include/sde_wa_butcher.h include/sde_wa.h
 sde_wa_nv.o: src/sde_wa_nv.c include/sde_wa.h include/sde_wa_errno.h \
   include/sde_wa_nv.h include/sde_wa_butcher.h include/sde_wa.h
+sde_wa_c3.o: src/sde_wa_c3.c include/sde_wa.h include/sde_wa_errno.h \
+  include/sde_wa_c3.h
