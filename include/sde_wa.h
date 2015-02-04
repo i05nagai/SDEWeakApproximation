@@ -15,6 +15,8 @@
 
 enum SDE_type {ITO=0, STR=1};/* Ito=>0, Stratonovich=>1 */
 
+enum EXP_type {ORIGINAL=0, YOSHIDA=1};/* NN=>0, YOSHIDA=>1 */
+
 typedef struct {
   enum SDE_type sde_type;
   int (**V)(const double y[], double dy[], void *params);
@@ -25,7 +27,7 @@ typedef struct {
   void *params;
 } SDE_WA_SYSTEM;
 
-enum ALG {E_M=0, N_V=1, N_N=2};
+enum ALG {E_M=0, N_V=1, N_N=2, C_3=3};
 enum Bernoulli_rv {T=0, H=1};
 
 typedef struct {
@@ -38,7 +40,9 @@ typedef struct {
 typedef struct sde_wa_sltn{
   enum ALG alg;
   int mth_is;
+  enum EXP_type exp_type;
   SDE_WA_SYSTEM *sde;
+	void (*exp_eval)(struct sde_wa_sltn *sl, double s, int jth);
   int (*one_step)(struct sde_wa_sltn *sl, double s);
   double *initv;
   double *destv;
@@ -48,15 +52,30 @@ typedef struct sde_wa_sltn{
     double *em; 
     RV_NV *nv; 
     double *nn;
+    double *c3;
   } sample_pt;
   double *rk_step_interv; /* RK intermidiate values for NV or NN*/
   double *nn_sample_pt_interv;
 } SDE_WA_SLTN;
 
+typedef struct sde_wa_pricer {
+	SDE_WA_SLTN *sltn;
+	double (*payoff_function)(double *x, void *params);
+	double *init_y;
+	double T;
+	double n;
+	void *gen_unif_rand;
+	void (*next_rand)(void *rand_gen, double *rand, int n);
+} SDE_WA_PRICER;
+
 SDE_WA_SYSTEM *alloc_SDE_WA_SYSTEM(int N, int d, void *params);
 void free_SDE_WA_SYSTEM(SDE_WA_SYSTEM *sys);
+
 SDE_WA_SLTN *alloc_SDE_WA_SLTN(enum ALG alg, int mth_is, SDE_WA_SYSTEM *sde);
 void free_SDE_WA_SLTN(SDE_WA_SLTN *sltn);
+
+SDE_WA_PRICER *alloc_SDE_WA_PRICER(SDE_WA_SLTN *sltn);
+void free_SDE_WA_PRICER(SDE_WA_PRICER *pricer);
 
 void Ito_to_Strt_drift(SDE_WA_SLTN *X, const double *init, double *dest);
 

@@ -1,5 +1,5 @@
 /*
- * sde_wa_nv.c
+ * sde_wa_c3.c
  */
 
 /*
@@ -38,7 +38,7 @@
 int std_distr_to_Gaussian(SDE_WA_SLTN *X){
   int i;
   double sq_2=sqrt(2.0);
-  
+
   for (i=0; i<X->sde->dim_BM; i++){
     X->nn_sample_pt_interv[i]
       =X->sample_pt.nn[i]/2.0+X->sample_pt.nn[i+X->sde->dim_BM]/sq_2;
@@ -60,8 +60,9 @@ int nn_vf_W(SDE_WA_SLTN *X, double s,
   
   if (X->sde->sde_type==ITO){    	
     Ito_to_Strt_drift(X, step_initv, step_destv);
-  }else
+  }else {
     X->sde->V[0](step_initv, step_destv, X->sde->params);
+  }
 
   for (j=0; j<X->sde->dim_y; j++){
     step_destv[j]=0.5*s*step_destv[j];
@@ -84,12 +85,16 @@ int sde_wa_nn(SDE_WA_SLTN *X, double s){
   
   /** std -> Gaussian **/
   std_distr_to_Gaussian(X);
-  sde_wa_butcher(X, s, 2);
+  //sde_wa_butcher(x, s, 2);
+  //buthcer or yoshida
+  X->exp_eval(X, s, 2);
   
   tmp_nn_interv=X->initv;
   X->initv=X->destv;
   X->destv=tmp_nn_interv;
-  sde_wa_butcher(X, s, 1);
+  //buthcer or yoshida
+  X->exp_eval(X, s, 1);
+  //sde_wa_butcher(X, s, 1);
   
   return SDE_WA_SUCCESS;
 }

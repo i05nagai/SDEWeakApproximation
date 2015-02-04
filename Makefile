@@ -35,7 +35,9 @@ SDE_WA_SRC = sde_wa.c
 SDE_WA_SRC += sde_wa_em.c
 SDE_WA_SRC += sde_wa_nv.c
 SDE_WA_SRC += sde_wa_nn.c
+SDE_WA_SRC += sde_wa_c3.c
 SDE_WA_SRC += sde_wa_butcher.c
+SDE_WA_SRC += sde_wa_yoshida.c
 SDE_WA_OBJS = ${SDE_WA_SRC:.c=.o}
 
 SDE_WA = sde_wa
@@ -63,5 +65,11 @@ sde_wa_nv.o: sde_wa_nv.c sde_wa.h sde_wa_errno.h sde_wa_nv.h sde_wa_butcher.h
 
 sde_wa_nn.o: sde_wa_nn.c sde_wa.h sde_wa_errno.h sde_wa_nn.h sde_wa_butcher.h
 
+sde_wa_c2.o: sde_wa_c3.c sde_wa.h sde_wa_errno.h sde_wa_c3.h sde_wa_butcher.h
+
+
 sde_wa_butcher.o: sde_wa_butcher.c sde_wa_butcher.h sde_wa.h sde_wa_errno.h sde_wa_nn.h
+
+sde_wa_yoshida.o: sde_wa_yoshida.c sde_wa_yoshida.h sde_wa.h sde_wa_errno.h sde_wa_butcher.h
+
 
