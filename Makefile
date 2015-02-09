@@ -22,77 +22,49 @@
 .SUFFIXES :
 .SUFFIXES : .o .c
 
-SRCDIR=src
-INCDIR=include
-VPATH = $(SRCDIR)
-VPATH += $(INCDIR)
 
 CC = gcc
-
 DEBUG = -02 -Wall
-
-SELF = basic.mk
-
 CFLAGS = $(DEBUG)
 
-INC_FLAGS = -I./
-INC_FLAGS = -I./$(INCDIR)
-# INC_FLAGS += -I$(HOME)/include
+SELF = basic.mk
+MAKEFILE = Makefile
+DIRS = $(shell find . -mindepth 1 -maxdepth 1 -type d | grep -v "\/\.")
+SELFS = $(addsuffix /$(SELF), $(DIRS))
+MAKEFILES = $(addsuffix /$(MAKEFILE), $(DIRS))
 
-.c.o :
-	$(CC) $(CFLAGS) $(INC_FLAGS) -c $<
-
-
-SDE_WA_OBJS =  sde_wa.o
-SDE_WA_OBJS += sde_wa_butcher.o
-SDE_WA_OBJS += sde_wa_em.o
-SDE_WA_OBJS += sde_wa_nn.o
-SDE_WA_OBJS += sde_wa_nv.o
-SDE_WA_OBJS += sde_wa_c3.o
-
-SDE_WA_SRC =  $(addprefix $(SRCDIR)/, $(SDE_WA_OBJS:.o=.c))
-
+SDE_WA_SELFS = $(shell find . -name '$(SELF)')
+SDE_WA_MAKEFILES = $(shell find . -name '$(MAKEFILE)')
+SDE_WA_SRC = $(shell find . -name '*.c')
+SDE_WA_OBJS =  $(SDE_WA_SRC:.c=.o)
 SDE_WA = sde_wa
 TARGET_SDE_WA = lib$(SDE_WA).a
 TARGETS = $(TARGET_SDE_WA) 
 
 
-$(TARGET_SDE_WA): $(SDE_WA_OBJS)
+$(TARGET_SDE_WA): create-objs
 	rm -f $@
 	ar cvr $@ $(SDE_WA_OBJS)
 
-Makefile : $(SELF)
-	rm -f $@
-	cp $(SELF) $@
-	chmod +w $@
-	echo '# Automatically-generated dependencies list:' >>$@
-	gcc ${CFLAGS} ${INC_FLAGS} -MM	\
-	${SDE_WA_SRC}	\
-	>> $@
-	chmod -w $@
+Makefiles: $(SELFS)
+	for dir in $(DIRS) ; do	\
+	 cd $$dir	;\
+	 make -f $(SELF) $(MAKEFILE)	;\
+	 cd ..	;\
+	done
+
+create-objs: $(SDE_WA_SELFS)
+	for dir in $(DIRS); do	\
+		cd $$dir	;\
+		make	;\
+		cd ..	;\
+	done
+
 
 .PHONY: all
 all: clean $(TARGETS)
 
 .PHONY: clean
 clean :
-	rm -f *.o $(TARGETS)
+	rm -f $(SDE_WA_OBJS) $(TARGETS)
 
-# Automatically-generated dependencies list:
-
-
-# Automatically-generated dependencies list:
-sde_wa.o: src/sde_wa.c include/sde_wa.h include/sde_wa_errno.h \
-  include/sde_wa_em.h include/sde_wa.h include/sde_wa_nv.h \
-  include/sde_wa_nn.h include/sde_wa_c3.h
-sde_wa_butcher.o: src/sde_wa_butcher.c include/sde_wa_butcher.h \
-  include/sde_wa.h include/sde_wa_errno.h include/sde_wa_nn.h \
-  include/sde_wa_c3.h
-sde_wa_em.o: src/sde_wa_em.c include/sde_wa.h include/sde_wa_errno.h \
-  include/sde_wa_em.h include/sde_wa.h
-sde_wa_nn.o: src/sde_wa_nn.c include/sde_wa.h include/sde_wa_errno.h \
-  include/sde_wa_nn.h include/sde_wa_butcher.h include/sde_wa.h
-sde_wa_nv.o: src/sde_wa_nv.c include/sde_wa.h include/sde_wa_errno.h \
-  include/sde_wa_nv.h include/sde_wa_butcher.h include/sde_wa.h
-sde_wa_c3.o: src/sde_wa_c3.c include/sde_wa.h include/sde_wa_errno.h \
-  include/sde_wa_c3.h

@@ -18,44 +18,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # version 2.1 along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, US
-#
+
+#Suffix Rule
 .SUFFIXES :
 .SUFFIXES : .o .c
-
-SRCDIR=src
-INCDIR=include
-VPATH = $(SRCDIR)
-VPATH += $(INCDIR)
-
-CC = gcc
-
-DEBUG = -02 -Wall
-
-SELF = basic.mk
-
-CFLAGS = $(DEBUG)
-
-INC_FLAGS = -I./
-INC_FLAGS = -I./$(INCDIR)
-# INC_FLAGS += -I$(HOME)/include
-
 .c.o :
 	$(CC) $(CFLAGS) $(INC_FLAGS) -c $<
 
+include ../common.mk
 
-SDE_WA_OBJS =  sde_wa.o
-SDE_WA_OBJS += sde_wa_butcher.o
-SDE_WA_OBJS += sde_wa_em.o
-SDE_WA_OBJS += sde_wa_nn.o
-SDE_WA_OBJS += sde_wa_nv.o
-SDE_WA_OBJS += sde_wa_c3.o
-
-SDE_WA_SRC =  $(addprefix $(SRCDIR)/, $(SDE_WA_OBJS:.o=.c))
-
-SDE_WA = sde_wa
-TARGET_SDE_WA = lib$(SDE_WA).a
+SDE_WA_SRC =  $(wildcard *.c)
+SDE_WA_OBJS =  $(SDE_WA_SRC:.c=.o)
+TARGET_SDE_WA = libsde_wa.a
 TARGETS = $(TARGET_SDE_WA) 
 
+.PHONY: all
+all: $(SDE_WA_OBJS)
 
 $(TARGET_SDE_WA): $(SDE_WA_OBJS)
 	rm -f $@
@@ -71,13 +49,7 @@ Makefile : $(SELF)
 	>> $@
 	chmod -w $@
 
-.PHONY: all
-all: clean $(TARGETS)
-
 .PHONY: clean
 clean :
 	rm -f *.o $(TARGETS)
-
-# Automatically-generated dependencies list:
-
 
