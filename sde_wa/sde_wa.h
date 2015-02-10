@@ -25,7 +25,7 @@ typedef struct {
   void *params;
 } SDE_WA_SYSTEM;
 
-enum ALG {E_M=0, N_V=1, N_N=2};
+enum ALG {E_M=0, N_V=1, N_N=2, C_3};
 enum Bernoulli_rv {T=0, H=1};
 
 typedef struct {
@@ -48,6 +48,7 @@ typedef struct sde_wa_sltn{
     double *em; 
     RV_NV *nv; 
     double *nn;
+    double *c3;
   } sample_pt;
   double *rk_step_interv; /* RK intermidiate values for NV or NN*/
   double *nn_sample_pt_interv;

@@ -2,3 +2,4 @@
 *.a
 *.pdf
 tags
+*/Makefile
