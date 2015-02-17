@@ -9,7 +9,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <mlmc.h>
+#include <sde_mlmc/mlmc.h>
 
 /**
  * MLMC Algorithm proposed by Mike Giles.

@@ -8,7 +8,7 @@
  */
 #include <stdlib.h>
 #include <math.h>
-#include <mlmc.h>
+#include <sde_mlmc/mlmc.h>
 
 /**
  * transform uniform random number to normal random number.
