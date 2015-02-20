@@ -24,8 +24,6 @@
 
 
 CC = gcc
-DEBUG = -O2 -Wall
-CFLAGS = $(DEBUG)
 
 SELF = basic.mk
 MAKEFILE = Makefile
